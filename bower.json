@@ -1,0 +1,23 @@
+{
+  "name": "angular-bootstrap-form-validation",
+  "version": "0.1",
+  "description": "AngularJS directives for Twitter Bootstrap form validation",
+  "main": "form-validation.js",
+  "keywords": [
+    "angularJS",
+    "bootstrap",
+    "form",
+    "validation"
+  ],
+  "authors": [
+    "igor.rafael@gmail.com"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
