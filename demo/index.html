@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>angular-bootstrap-form-validation</title>
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+	<script src="../src/form-validation.js"></script>
+	<script>
+		angular.module('demo', ['ui.bootstrap.validation'])
+		.controller('DemoCtrl', function($scope) {
+			$scope.save = function() {
+				console.log('saved');
+			};
+		});
+	</script>
+</head>
+<body ng-app="demo">
+	<div class="container" ng-controller="DemoCtrl">
+		<form name="someForm" novalidate ui-validation-submit="save()">
+			<div class="form-group" ui-validation-show-errors>
+				<label for="someField" class="control-label">Some field</label>
+				<input type="text" name="someField" required class="form-control" ng-model="someField">
+				<ui-validation-error-messages>
+					<ui-custom-error-message error="required">This field cannot be empty</ui-custom-error-message>
+				</ui-validation-error-messages>
+			</div>
+			<button type="submit" class="btn btn-primary" ng-disabled="someForm.$pristine">Save</button>
+		</form>
+	</div>
+</body>
+</html>

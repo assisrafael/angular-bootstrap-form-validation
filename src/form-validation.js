@@ -4,11 +4,11 @@
   This module was based http://code.realcrowd.com/on-the-bleeding-edge-advanced-angularjs-form-validation/
 */
 
-angular.module('formValidation', [])
-.directive('fvSubmit', ['$parse', function ($parse) {
+angular.module('ui.bootstrap.validation', [])
+.directive('uiValidationSubmit', ['$parse', function ($parse) {
 	return {
 		restrict: 'A',
-		require: ['fvSubmit', '?form'],
+		require: ['uiValidationSubmit', '?form'],
 		controller: [function () {
 			this.attempted = false;
 
@@ -39,16 +39,27 @@ angular.module('formValidation', [])
 		}
 	};
 }])
-.directive('fvHasError', [function () {
+.directive('uiValidationShowErrors', [function () {
 	return {
 		restrict: 'A',
-		require: '^fvSubmit',
+		require: '^uiValidationSubmit',
 		scope: {
-			formField: '=fvHasError'
 		},
-		link: function (scope, element, attrs, fvSubmitCtrl) {
+		compile: function(element, attrs) {
+			if(!element.hasClass('form-group')) {
+				throw 'ui-validation-show-errors element requires \'form-group\' class';
+			}
+
+			if(element[0].querySelector('input[name]') == null && 
+				element[0].querySelector('select[name]') == null &&
+				element[0].querySelector('textarea[name]') == null)
+			{
+				throw 'ui-validation-show-errors requires a child input/select/textarea element with a \'name\' attribute';
+			}
+		},
+		link: function (scope, element, attrs, submitCtrl) {
 			scope.$watch(function(){
-				return fvSubmitCtrl.attempted && scope.formField.$invalid;
+				return submitCtrl.attempted && scope.formField.$invalid;
 			}, function(needsAttention) {
 				if(needsAttention) {
 					element.addClass('has-error');
@@ -59,16 +70,19 @@ angular.module('formValidation', [])
 		}
 	};
 }])
-.directive('fvErrorMessages', [function () {
+.directive('uiValidationErrorMessages', [function () {
 	return {
 		restrict: 'E',
 		templateUrl: 'templates/form-validation/error-messages.html',
 		scope: {
-			formField: '=field',
-			min: '=min',
-			max: '=max',
-			minlength: '=minlength',
-			required: '=required'
+		}
+	};
+}])
+.directive('uiCustomErrorMessage', [function () {
+	return {
+		restrict: 'E',
+		link: function (scope, iElement, iAttrs) {
+			
 		}
 	};
 }])
