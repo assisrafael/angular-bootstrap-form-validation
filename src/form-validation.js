@@ -16,11 +16,11 @@ angular.module('ui.bootstrap.validation', [])
 				this.attempted = true;
 			};
 		}],
-		link: function(scope, formElement, attributes, controllers) {
+		link: function(scope, formElement, attrs, controllers) {
 			var submitController = controllers[0];
 			var formController = (controllers.length > 1) ? controllers[1] : null;
 
-			var fn = $parse(attributes.fvSubmit);
+			var fn = $parse(attrs.uiValidationSubmit);
 
 			formElement.bind('submit', function () {
 				submitController.setAttempted();
@@ -42,24 +42,34 @@ angular.module('ui.bootstrap.validation', [])
 .directive('uiValidationShowErrors', [function () {
 	return {
 		restrict: 'A',
-		require: '^uiValidationSubmit',
-		scope: {
-		},
-		compile: function(element, attrs) {
+		require: [
+			'^form',
+			'^?uiValidationSubmit'
+		],
+		scope: { },
+		link: function (scope, element, attrs, controllers) {
 			if(!element.hasClass('form-group')) {
 				throw 'ui-validation-show-errors element requires \'form-group\' class';
 			}
 
-			if(element[0].querySelector('input[name]') == null && 
-				element[0].querySelector('select[name]') == null &&
-				element[0].querySelector('textarea[name]') == null)
-			{
+			var formCtrl = controllers[0];
+
+			if(!formCtrl) {
+				throw 'ui-validation-show-errors requires a controller associated to this form';
+			}
+			
+			var submitCtrl = (controllers.length > 1) ? controllers[1] : null;
+			
+			var inputElement = element[0].querySelector('input[name],select[name],textarea[name]');
+
+			if(!inputElement)	{
 				throw 'ui-validation-show-errors requires a child input/select/textarea element with a \'name\' attribute';
 			}
-		},
-		link: function (scope, element, attrs, submitCtrl) {
+
+			var fieldCtrl = formCtrl[inputElement.name];
+
 			scope.$watch(function(){
-				return submitCtrl.attempted && scope.formField.$invalid;
+				return fieldCtrl.$invalid && (!submitCtrl || submitCtrl.attempted);
 			}, function(needsAttention) {
 				if(needsAttention) {
 					element.addClass('has-error');
@@ -70,11 +80,35 @@ angular.module('ui.bootstrap.validation', [])
 		}
 	};
 }])
-.directive('uiValidationErrorMessages', [function () {
+.directive('uiValidationErrorMessages', ['$compile', function ($compile) {
 	return {
 		restrict: 'E',
+		require: '^form',
 		templateUrl: 'templates/form-validation/error-messages.html',
-		scope: {
+		scope: {},
+		link: function(scope, element, attrs, formCtrl) {
+			var formGroup = element.parent();
+			var inputElement = formGroup[0].querySelector('input[name],select[name],textarea[name]');
+
+			if(!inputElement)	{
+				throw 'ui-validation-error-messages requires a sibling input/select/textarea element with a \'name\' attribute';
+			}
+
+			scope.fieldCtrl = formCtrl[inputElement.name];
+			var angularElement = angular.element(inputElement);
+			scope.minlength = angularElement.attr('ng-minlength');
+			scope.min = angularElement.attr('min');
+			scope.max = angularElement.attr('max');
+
+			scope.errorMessages = {
+				'required': 'Campo de preenchimento obrigatório',
+				'min': 'Valor mínimo: {{min}}',
+				'max': 'Valor mínimo: {{max}}',
+				'minlength': 'Tamanho mínimo: {{minlength}} caracteres',
+				'email': 'Email inválido',
+			};
+
+			$compile(formGroup[0].querySelector('.help-block'))(scope);
 		}
 	};
 }])
@@ -88,12 +122,8 @@ angular.module('ui.bootstrap.validation', [])
 }])
 .run(['$templateCache', function($templateCache) {
 	$templateCache.put('templates/form-validation/error-messages.html',
-		'<div class="error" ng-show="formField.$invalid">' +
-		'	<small class="error" ng-show="formField.$error.required">{{required || \'Campo de preenchimento obrigatório.\'}}</small>' +
-		'	<small class="error" ng-show="formField.$error.min">Valor mínimo: {{min || \'?\'}}.</small>' +
-		'	<small class="error" ng-show="formField.$error.max">Valor máximo: {{max || \'?\'}}.</small>' +
-		'	<small class="error" ng-show="formField.$error.minlength">Tamanho mínimo: {{minlength || \'?\'}} caracteres.</small>' +
-		'	<small class="error" ng-show="formField.$error.email">Email inválido.</small>' +
+		'<div class="help-block" ng-show="fieldCtrl.$invalid">' +
+		'	<small ng-repeat="(errorType, errorValue) in fieldCtrl.$error" ng-show="errorValue">{{errorMessages[errorType]}}</small>' +
 		'</div>'
 	);
 }]);

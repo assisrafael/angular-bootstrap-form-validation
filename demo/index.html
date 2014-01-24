@@ -20,7 +20,16 @@
 		<form name="someForm" novalidate ui-validation-submit="save()">
 			<div class="form-group" ui-validation-show-errors>
 				<label for="someField" class="control-label">Some field</label>
-				<input type="text" name="someField" required class="form-control" ng-model="someField">
+				<input type="text" name="someField" required class="form-control" ng-model="someField" ng-minlength="3">
+				<ui-validation-error-messages>
+			</div>
+
+			<div class="form-group" ui-validation-show-errors>
+				<label for="otherField" class="control-label">Other field</label>
+				<select name="otherField" required class="form-control" ng-model="otherField">
+					<option value="one">One option</option>
+					<option value="another">Another option</option>
+				</select>
 				<ui-validation-error-messages>
 					<ui-custom-error-message error="required">This field cannot be empty</ui-custom-error-message>
 				</ui-validation-error-messages>
