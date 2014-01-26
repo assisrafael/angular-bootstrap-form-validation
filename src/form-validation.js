@@ -84,6 +84,7 @@ angular.module('ui.bootstrap.validation', [])
 	return {
 		restrict: 'E',
 		require: '^form',
+		replace: true,
 		templateUrl: 'templates/form-validation/error-messages.html',
 		scope: {},
 		link: function(scope, element, attrs, formCtrl) {
@@ -102,20 +103,19 @@ angular.module('ui.bootstrap.validation', [])
 
 			scope.errorMessages = {
 				'required': 'Campo de preenchimento obrigatório',
-				'min': 'Valor mínimo: {{min}}',
-				'max': 'Valor mínimo: {{max}}',
-				'minlength': 'Tamanho mínimo: {{minlength}} caracteres',
+				'min': 'Valor mínimo: '+scope.min,
+				'max': 'Valor mínimo: '+scope.max,
+				'minlength': 'Tamanho mínimo: '+scope.minlength+' caracteres',
 				'email': 'Email inválido',
 			};
-
-			$compile(formGroup[0].querySelector('.help-block'))(scope);
 		}
 	};
 }])
 .directive('uiCustomErrorMessage', [function () {
 	return {
 		restrict: 'E',
-		link: function (scope, iElement, iAttrs) {
+		replace: true,
+		link: function (scope, element, attrs) {
 			
 		}
 	};
