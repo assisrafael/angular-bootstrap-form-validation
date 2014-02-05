@@ -25,9 +25,13 @@ How to use
 		<label for="someField" class="control-label">Some field</label>
 		<input type="text" name="someField" required class="form-control" ng-model="someField">
 		<ui-validation-error-messages>
-			<ui-custom-error-message error="required">This field cannot be empty</ui-custom-error-message>
-		</ui-validation-error-messages>
 	</div>
 	<button type="submit" class="btn btn-primary" ng-disabled="someForm.$pristine">Save</button>
 </form>
+```
+
+3. (optional) Use localized error messages:
+
+```html
+<script src="form-validation-locale_pt-br.js"></script>
 ```

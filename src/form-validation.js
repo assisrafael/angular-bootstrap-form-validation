@@ -82,43 +82,59 @@ angular.module('ui.bootstrap.validation', [])
 		}
 	};
 }])
-.directive('uiValidationErrorMessages', ['$compile', function ($compile) {
+.value('ErrorMessages', {
+	'email': 'Invalid email',
+	'max': 'Maximum value: ',
+	'maxlength': 'Maximum length: ',
+	'min': 'Minimum value: ',
+	'minlength': 'Minimum length: ',
+	'required': 'This field cannot be blank',
+	'unique': 'This field does not allow duplicated values'
+})
+.factory('ErrorMessagesWithAttrs', ['ErrorMessages', function (ErrorMessages) {
 	return {
-		restrict: 'E',
-		require: '^form',
-		replace: true,
-		templateUrl: 'templates/form-validation/error-messages.html',
-		scope: {},
-		link: function(scope, element, attrs, formCtrl) {
-			var formGroup = element.parent();
-			var inputElement = formGroup[0].querySelector('input[name],select[name],textarea[name]');
-
-			if(!inputElement)	{
-				throw 'ui-validation-error-messages requires a sibling input/select/textarea element with a \'name\' attribute';
-			}
-
-			scope.fieldCtrl = formCtrl[inputElement.name];
-			var angularElement = angular.element(inputElement);
-			scope.minlength = angularElement.attr('ng-minlength');
-			scope.min = angularElement.attr('min');
-			scope.max = angularElement.attr('max');
-
-			scope.errorMessages = {
-				'required': 'Campo de preenchimento obrigatório',
-				'min': 'Valor mínimo: '+scope.min,
-				'max': 'Valor mínimo: '+scope.max,
-				'minlength': 'Tamanho mínimo: '+scope.minlength+' caracteres',
-				'email': 'Email inválido',
+		getMessages: function(element) {
+			return {
+				'email': ErrorMessages.email,
+				'max': ErrorMessages.max + element.attr('max'),
+				'maxlength': ErrorMessages.maxlength + element.attr('ng-maxlength'),
+				'min': ErrorMessages.min + element.attr('min'),
+				'minlength': ErrorMessages.minlength + element.attr('ng-minlength'),
+				'required': ErrorMessages.required,
+				'unique': ErrorMessages.unique
 			};
 		}
 	};
 }])
+.directive('uiValidationErrorMessages', ['ErrorMessagesWithAttrs',
+	function (ErrorMessagesWithAttrs) {
+		return {
+			restrict: 'E',
+			require: '^form',
+			replace: true,
+			templateUrl: 'templates/form-validation/error-messages.html',
+			scope: {},
+			link: function(scope, element, attrs, formCtrl) {
+				var formGroup = element.parent();
+				var inputElement = formGroup[0].querySelector('input[name],select[name],textarea[name]');
+
+				if(!inputElement)	{
+					throw 'ui-validation-error-messages requires a sibling input/select/textarea element with a \'name\' attribute';
+				}
+
+				var angularElement = angular.element(inputElement);
+				scope.fieldCtrl = formCtrl[inputElement.name];
+				scope.errorMessages = ErrorMessagesWithAttrs.getMessages(angularElement);
+			}
+		};
+	}
+])
 .directive('uiCustomErrorMessage', [function () {
 	return {
 		restrict: 'E',
 		replace: true,
-		link: function (scope, element, attrs) {
-			
+		link: function () {
+			console.log('Not implemented yet!');
 		}
 	};
 }])
