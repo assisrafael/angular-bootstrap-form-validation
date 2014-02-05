@@ -22,7 +22,7 @@ angular.module('ui.bootstrap.validation', [])
 
 			var fn = $parse(attrs.uiValidationSubmit);
 
-			formElement.bind('submit', function () {
+			formElement.bind('submit', function (event) {
 				submitController.setAttempted();
 				if (!scope.$$phase) {
 					scope.$apply();
@@ -33,7 +33,9 @@ angular.module('ui.bootstrap.validation', [])
 				}
 
 				scope.$apply(function() {
-					fn(scope, {$event:event});
+					fn(scope, {
+						$event: event
+					});
 				});
 			});
 		}
