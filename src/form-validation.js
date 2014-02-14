@@ -91,28 +91,20 @@ angular.module('ui.bootstrap.validation', [])
 	'required': 'This field cannot be blank',
 	'unique': 'This field does not allow duplicated values'
 })
-.factory('ErrorMessagesWithAttrs', ['ErrorMessages', function (ErrorMessages) {
-	return {
-		getMessages: function(element) {
-			return {
-				'email': ErrorMessages.email,
-				'max': ErrorMessages.max + element.attr('max'),
-				'maxlength': ErrorMessages.maxlength + element.attr('ng-maxlength'),
-				'min': ErrorMessages.min + element.attr('min'),
-				'minlength': ErrorMessages.minlength + element.attr('ng-minlength'),
-				'required': ErrorMessages.required,
-				'unique': ErrorMessages.unique
-			};
-		}
-	};
-}])
-.directive('uiValidationErrorMessages', ['ErrorMessagesWithAttrs',
-	function (ErrorMessagesWithAttrs) {
+.directive('uiValidationErrorMessages', ['ErrorMessages', '$parse',
+	function (ErrorMessages, $parse) {
+		var normalizeAttrName = function(attr) {
+			return attr.replace(/^(x[\:\-_]|data[\:\-_]|ng[\:\-_])/i, '');
+		};
+
 		return {
 			restrict: 'E',
 			require: '^form',
 			replace: true,
-			templateUrl: 'templates/form-validation/error-messages.html',
+			template: 
+				'<div class="help-block" ng-show="fieldCtrl.$invalid">' +
+					'	<small ng-repeat="(errorType, errorValue) in fieldCtrl.$error" ng-show="fieldCtrl.$error[errorType]">{{errorMessages[errorType]}} <span ng-bind="{{errorType}}"></span></small>' +
+				'</div>',
 			scope: {},
 			link: function(scope, element, attrs, formCtrl) {
 				var formGroup = element.parent();
@@ -123,8 +115,28 @@ angular.module('ui.bootstrap.validation', [])
 				}
 
 				var angularElement = angular.element(inputElement);
+				
 				scope.fieldCtrl = formCtrl[inputElement.name];
-				scope.errorMessages = ErrorMessagesWithAttrs.getMessages(angularElement);
+				angular.forEach(angularElement[0].attributes, function(attr) {
+					var attrName = normalizeAttrName(attr.name);
+					var attrValue = attr.nodeValue;
+
+					if(ErrorMessages.hasOwnProperty(attrName) && attrValue.length > 0) {
+						scope[attrName] = attrValue;
+
+						var canBeAModel = /^[A-Za-z]/.test(attr.nodeValue);
+
+						if(canBeAModel) {
+							scope[attrName] = $parse(attrValue)(scope.$parent)
+
+						 	scope.$parent.$watch(attr.nodeValue, function(newValue) {
+								scope[attr.name] = newValue;
+						 	});
+						}
+					}
+				});
+
+				scope.errorMessages = angular.copy(ErrorMessages);		
 			}
 		};
 	}
@@ -137,11 +149,4 @@ angular.module('ui.bootstrap.validation', [])
 			console.log('Not implemented yet!');
 		}
 	};
-}])
-.run(['$templateCache', function($templateCache) {
-	$templateCache.put('templates/form-validation/error-messages.html',
-		'<div class="help-block" ng-show="fieldCtrl.$invalid">' +
-		'	<small ng-repeat="(errorType, errorValue) in fieldCtrl.$error" ng-show="errorValue">{{errorMessages[errorType]}}</small>' +
-		'</div>'
-	);
 }]);

@@ -4,12 +4,16 @@
 	<meta charset="UTF-8">
 	<title>angular-bootstrap-form-validation</title>
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
 	<script src="../src/form-validation.js"></script>
 	<script src="../src/i18n/form-validation-locale_pt-br.js"></script>
 	<script>
 		angular.module('demo', ['ui.bootstrap.validation'])
 		.controller('DemoCtrl', function($scope) {
+			$scope.someModel = {
+				anotherField: 5
+			};
+
 			$scope.save = function() {
 				console.log('saved');
 			};
@@ -20,14 +24,26 @@
 	<div class="container" ng-controller="DemoCtrl">
 		<form name="someForm" novalidate ui-validation-submit="save()">
 			<div class="form-group" ui-validation-show-errors>
-				<label for="someField" class="control-label">Some field</label>
-				<input type="text" name="someField" required class="form-control" ng-model="someField" ng-minlength="3">
+				<label for="someFieldName" class="control-label">Some field</label>
+				<input type="text" name="someFieldName" required class="form-control" ng-model="someModel.someField" ng-minlength="3">
 				<ui-validation-error-messages>
 			</div>
 
 			<div class="form-group" ui-validation-show-errors>
-				<label for="otherField" class="control-label">Other field</label>
-				<select name="otherField" required class="form-control" ng-model="otherField">
+				<label for="anotherFieldName" class="control-label">Another field</label>
+				<input type="number" name="anotherFieldName" required class="form-control" ng-model="someModel.anotherField" max="32">
+				<ui-validation-error-messages>
+			</div>
+
+			<div class="form-group" ui-validation-show-errors>
+				<label for="anotherField2Name" class="control-label">Another field 2</label>
+				<input type="number" name="anotherField2Name" required class="form-control" ng-model="someModel.anotherField2" min="someModel.anotherField">
+				<ui-validation-error-messages>
+			</div>
+
+			<div class="form-group" ui-validation-show-errors>
+				<label for="otherFieldName" class="control-label">Other field</label>
+				<select name="otherFieldName" required class="form-control" ng-model="someModel.otherField">
 					<option value="one">One option</option>
 					<option value="another">Another option</option>
 				</select>
