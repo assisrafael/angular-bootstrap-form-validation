@@ -127,7 +127,7 @@ angular.module('ui.bootstrap.validation', [])
 						var canBeAModel = /^[A-Za-z]/.test(attr.nodeValue);
 
 						if(canBeAModel) {
-							scope[attrName] = $parse(attrValue)(scope.$parent)
+							scope[attrName] = $parse(attrValue)(scope.$parent);
 
 						 	scope.$parent.$watch(attr.nodeValue, function(newValue) {
 								scope[attr.name] = newValue;
