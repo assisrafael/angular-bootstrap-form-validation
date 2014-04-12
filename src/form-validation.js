@@ -118,6 +118,11 @@ angular.module('ui.bootstrap.validation', [])
 				
 				scope.fieldCtrl = formCtrl[inputElement.name];
 				angular.forEach(angularElement[0].attributes, function(attr) {
+					//ngRequired value cannot appear in error message
+					if(/^(ng-required)/.test(attr.name)) {
+						return;
+					}
+
 					var attrName = normalizeAttrName(attr.name);
 					var attrValue = attr.nodeValue;
 
