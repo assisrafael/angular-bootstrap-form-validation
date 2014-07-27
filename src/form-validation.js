@@ -59,9 +59,9 @@ angular.module('ui.bootstrap.validation', [])
 			if(!formCtrl) {
 				throw 'ui-validation-show-errors requires a controller associated to this form';
 			}
-			
+
 			var submitCtrl = (controllers.length > 1) ? controllers[1] : null;
-			
+
 			var inputElement = element[0].querySelector('input[name],select[name],textarea[name]');
 
 			if(!inputElement)	{
@@ -98,10 +98,10 @@ angular.module('ui.bootstrap.validation', [])
 		};
 
 		return {
-			restrict: 'E',
+			restrict: 'AE',
 			require: '^form',
 			replace: true,
-			template: 
+			template:
 				'<div class="help-block" ng-show="fieldCtrl.$invalid">' +
 					'	<small ng-repeat="(errorType, errorValue) in fieldCtrl.$error" ng-show="fieldCtrl.$error[errorType]">{{errorMessages[errorType]}} <span ng-bind="{{errorType}}"></span></small>' +
 				'</div>',
@@ -115,7 +115,7 @@ angular.module('ui.bootstrap.validation', [])
 				}
 
 				var angularElement = angular.element(inputElement);
-				
+
 				scope.fieldCtrl = formCtrl[inputElement.name];
 				angular.forEach(angularElement[0].attributes, function(attr) {
 					//ngRequired value cannot appear in error message
@@ -141,7 +141,7 @@ angular.module('ui.bootstrap.validation', [])
 					}
 				});
 
-				scope.errorMessages = angular.copy(ErrorMessages);		
+				scope.errorMessages = angular.copy(ErrorMessages);
 			}
 		};
 	}
