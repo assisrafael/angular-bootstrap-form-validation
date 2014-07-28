@@ -102,7 +102,7 @@ angular.module('ui.bootstrap.validation', [])
 			require: '^form',
 			replace: true,
 			template:
-				'<div class="help-block" ng-show="fieldCtrl.$invalid">' +
+				'<div class="ui-validation help-block" ng-show="fieldCtrl.$invalid">' +
 					'	<small ng-repeat="(errorType, errorValue) in fieldCtrl.$error" ng-show="fieldCtrl.$error[errorType]">{{errorMessages[errorType]}} <span ng-bind="{{errorType}}"></span></small>' +
 				'</div>',
 			scope: {},
