@@ -21,7 +21,7 @@ How to use
 
 ```html
 <form name="someForm" novalidate ui-validation-submit="save()">
-	<div class="form-group" ui-validation-show-erros>
+	<div class="form-group" ui-validation-show-errors>
 		<label for="someField" class="control-label">Some field</label>
 		<input type="text" name="someField" required class="form-control" ng-model="someField">
 		<ui-validation-error-messages>
