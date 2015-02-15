@@ -8,7 +8,20 @@ module.exports = function(config) {
 			'src/*.js'
 		],
 		port: 9876,
-		reporters: ['progress'],
+		reporters: ['progress', 'coverage'],
+		preprocessors: {
+			'src/form-validation.js': ['coverage']
+		},
+		coverageReporter: {
+			dir: 'coverage',
+			reporters: [{
+				type: 'lcov',
+				subdir: 'report-lcov'
+			}, {
+				type: 'html',
+				subdir: 'report-html'
+			}]
+		},
 		colors: true,
 		autoWatch: false,
 		singleRun: false,
