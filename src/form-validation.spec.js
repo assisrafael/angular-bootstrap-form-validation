@@ -1,9 +1,13 @@
 describe('angular-bootstrap-form-validation', function() {
 	beforeEach(module('ui.bootstrap.validation'));
 
-	function setup (html) {
+	function setup (html, initialScope) {
 		var container;
 		inject(function($compile, $rootScope) {
+			if (angular.isDefined(initialScope)) {
+				angular.extend($rootScope, initialScope);
+			}
+
 			container = $compile(html)($rootScope);
 			$rootScope.$apply();
 		});
@@ -61,6 +65,32 @@ describe('angular-bootstrap-form-validation', function() {
 			for (var i = 0; i < 3; i++) {
 				expect(angular.element(validations[i]).text()).toBe('This field cannot be blank ');
 			}
+		});
+
+		it('should expose (in the scope) the values used in the validation (to appear in the validation message', function() {
+			var form = setup('<form><input name="model" ng-model="model" ng-minlength="8"><span ui-validation-error-messages></span></form>');
+
+			var validations = form.find('small');
+			expect(validations.length).toBe(1);
+			expect(validations.text()).toBe('Minimum length:  8');
+		});
+
+		it('should ignore ng-require value ("require" validation covers it)', function() {
+			var form = setup('<form><input name="model" ng-model="model" ng-required="true"><span ui-validation-error-messages></span></form>');
+
+			var validations = form.find('small');
+			expect(validations.length).toBe(1);
+			expect(validations.text()).toBe('This field cannot be blank ');
+		});
+
+		it('should parse validation values if necessary', function() {
+			var form = setup('<form><input name="model" ng-model="model" ng-minlength="min"><span ui-validation-error-messages></span></form>',{
+				min: 12
+			});
+
+			var validations = form.find('small');
+			expect(validations.length).toBe(1);
+			expect(validations.text()).toBe('Minimum length:  12');
 		});
 	});
 
