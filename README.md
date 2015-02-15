@@ -1,10 +1,8 @@
-angular-bootstrap-form-validation
-=================================
+# angular-bootstrap-form-validation
 
 AngularJS directives for Twitter Bootstrap form validation.
 
-Installation
-------------
+## Installation
 
 With Bower:
 
@@ -12,8 +10,7 @@ With Bower:
 bower install --save angular-bootstrap-form-validation
 ```
 
-How to use
-----------
+## How to use
 
 1. Include the module ```ui.bootstrap.validation``` in your angular app:
 
@@ -30,7 +27,7 @@ How to use
 </form>
 ```
 
-3. (optional) Use localized error messages:
+3. (optional) Use localized error messages (only pt-br available):
 
 ```html
 <script src="form-validation-locale_pt-br.js"></script>
