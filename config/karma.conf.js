@@ -8,7 +8,7 @@ module.exports = function(config) {
 			'src/*.js'
 		],
 		port: 9876,
-		reporters: ['progress', 'coverage'],
+		reporters: ['progress', 'coverage', 'coveralls'],
 		preprocessors: {
 			'src/form-validation.js': ['coverage']
 		},
