@@ -21,5 +21,12 @@
   "bugs": {
     "url": "https://github.com/assisrafael/angular-bootstrap-form-validation/issues"
   },
-  "homepage": "https://github.com/assisrafael/angular-bootstrap-form-validation"
+  "homepage": "https://github.com/assisrafael/angular-bootstrap-form-validation",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.5"
+  }
 }
