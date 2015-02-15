@@ -8,7 +8,7 @@ module.exports = function(config) {
 			'src/*.js'
 		],
 		port: 9876,
-		reporters: ['progress', 'coverage', 'coveralls'],
+		reporters: ['progress', 'coverage'],
 		preprocessors: {
 			'src/form-validation.js': ['coverage']
 		},
@@ -36,6 +36,8 @@ module.exports = function(config) {
 
 	if(process.env.TRAVIS){
 		configuration.browsers = ['Chrome_travis_ci'];
+
+		configuration.reporters.push('coveralls');
 	}
 
 	config.set(configuration);
