@@ -1,4 +1,4 @@
-# angular-bootstrap-form-validation
+# angular-bootstrap-form-validation [![Build Status](https://travis-ci.org/assisrafael/angular-bootstrap-form-validation.svg)](https://travis-ci.org/assisrafael/angular-bootstrap-form-validation)
 
 AngularJS directives for Twitter Bootstrap form validation.
 
