@@ -1,0 +1,25 @@
+{
+  "name": "angular-bootstrap-form-validation",
+  "version": "0.9.6",
+  "description": "AngularJS directives for Twitter Bootstrap 3.0 form validation",
+  "main": "src/form-validation.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/assisrafael/angular-bootstrap-form-validation.git"
+  },
+  "keywords": [
+    "angularjs",
+    "bootstrap",
+    "form",
+    "validation"
+  ],
+  "author": "igor.rafael@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/assisrafael/angular-bootstrap-form-validation/issues"
+  },
+  "homepage": "https://github.com/assisrafael/angular-bootstrap-form-validation"
+}
