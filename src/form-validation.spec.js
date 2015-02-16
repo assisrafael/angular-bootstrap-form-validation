@@ -135,7 +135,56 @@ describe('angular-bootstrap-form-validation', function() {
 	});
 
 	describe('uiValidationShowErrors', function() {
-		it('should throw an error when ui-validation-submit cannot be found in DOM hierarchy');
-		it('should only show validation errors after the first form submit');
+		it('should thrown an error if used outside a form', function() {
+			expect(function() {
+				setup('<div ui-validation-show-errors></div>');
+			}).toThrow();
+		});
+
+		it('should throw an error if the element does not have .form-group class', function() {
+			expect(function() {
+				setup('<form><div ui-validation-show-errors></div></form>');
+			}).toThrow();
+		});
+
+		it('should throw an error when it does not have an input/selec/textarea child', function() {
+			expect(function() {
+				setup('<form><div class="form-group" ui-validation-show-errors></div></form>');
+			}).toThrow();
+		});
+
+		it('should not thrown an error if properly configured', function() {
+			expect(function() {
+				setup('<form><div class="form-group" ui-validation-show-errors><input name="model" ng-model="model" ng-maxlength="4"></div></form>');
+			}).not.toThrow();
+		});
+
+		it('should only have .has-error class after the form has been submitted when using uiValidationSubmit', function() {
+			var form = setup('<form ui-validation-submit="action()"><div class="form-group" ui-validation-show-errors><input name="model" ng-model="model" ng-maxlength="4"><span ui-validation-error-messages></span></div></form>', {
+				model: 'abcde',
+				action: function() {
+					this.model = 'success';
+				}
+			});
+
+			var formCtrl = form.controller('uiValidationSubmit');
+			expect(formCtrl.attempted).toBe(false);
+
+			var formGroup = form.children();
+			expect(formGroup.hasClass('form-group')).toBe(true);
+			expect(formGroup.hasClass('has-error')).toBe(false);
+
+			var model = form.find('input').controller('ngModel');
+			expect(model.$modelValue).toBe('abcde');
+
+			form.triggerHandler('submit');
+			expect(formCtrl.attempted).toBe(true);
+			expect(formGroup.hasClass('has-error')).toBe(true);
+			expect(model.$modelValue).toBe('abcde');
+
+			var validations = form.find('small');
+			expect(validations.length).toBe(1);
+			expect(validations.text()).toBe('Maximum length:  4');
+		});
 	});
 });
