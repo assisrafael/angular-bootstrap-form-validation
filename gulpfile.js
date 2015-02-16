@@ -108,3 +108,5 @@ gulp.task('version-bump', function() {
 	}))
 	.pipe(gulp.dest('./'));
 });
+
+gulp.task('release', ['version-bump', 'changelog']);
