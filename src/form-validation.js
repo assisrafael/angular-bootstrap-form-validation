@@ -18,7 +18,7 @@ angular.module('ui.bootstrap.validation', [])
 		}],
 		link: function(scope, formElement, attrs, controllers) {
 			var submitController = controllers[0];
-			var formController = (controllers.length > 1) ? controllers[1] : null;
+			var formController = controllers[1] || null;
 
 			var fn = $parse(attrs.uiValidationSubmit);
 
@@ -60,7 +60,7 @@ angular.module('ui.bootstrap.validation', [])
 				throw 'ui-validation-show-errors requires a controller associated to this form';
 			}
 
-			var submitCtrl = (controllers.length > 1) ? controllers[1] : null;
+			var submitCtrl = controllers[1] || null;
 
 			var inputElement = element[0].querySelector('input[name],select[name],textarea[name]');
 
@@ -151,7 +151,7 @@ angular.module('ui.bootstrap.validation', [])
 		restrict: 'E',
 		replace: true,
 		link: function () {
-			console.log('Not implemented yet!');
+			throw new Error('Not implemented yet!');
 		}
 	};
 }]);
