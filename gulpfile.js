@@ -12,6 +12,7 @@ var filter = require('gulp-filter');
 var insert = require('gulp-insert');
 var argv = require('minimist')(process.argv.slice(2));
 var bump = require('gulp-bump');
+var git = require('gulp-git');
 
 var VERSION = argv.version || pkg.version;
 
@@ -23,11 +24,15 @@ var config = {
 		' * @license MIT\n' +
 		' * v' + VERSION + '\n' +
 		' */\n',
+	bower: {
+		repository: 'git@github.com:assisrafael/bower-angular-bootstrap-form-validation.git',
+		path: './bower-angular-bootstrap-form-validation'
+	}
 };
 
 gulp.task('changelog', function() {
 	var options = {
-		reporitory: pkg.homepage,
+		repository: pkg.homepage,
 		version: VERSION,
 		file: 'CHANGELOG.md'
 	};
@@ -98,15 +103,72 @@ function filterNonCodeFiles() {
 	});
 }
 
-gulp.task('version-bump', function() {
-	gulp.src([
-		'./bower.json',
-		'./package.json'
-	])
+function bumpVersion (folder) {
+	return gulp.src([
+		'bower.json',
+		'package.json'
+	], {
+		cwd: folder
+	})
 	.pipe(bump({
 		version: VERSION
 	}))
-	.pipe(gulp.dest('./'));
+	.pipe(gulp.dest(folder));
+}
+
+gulp.task('version-bump', function() {
+	return bumpVersion('./');
 });
 
 gulp.task('release', ['version-bump', 'changelog']);
+
+gulp.task('bower-clone', ['build'], function(done) {
+	git.clone(config.bower.repository, function (err) {
+		if (err) {
+			throw err;
+		}
+
+		done();
+	});
+});
+
+gulp.task('bower-bump', ['bower-clone'], function() {
+	return bumpVersion(config.bower.path)
+		.pipe(git.add({cwd:config.bower.path}));
+});
+
+gulp.task('bower-commit', ['bower-bump'], function() {
+	return gulp.src('./dist/**/*.*')
+		.pipe(gulp.dest(config.bower.path))
+		.pipe(git.add({cwd:config.bower.path}))
+		.pipe(git.commit('release: version ' + VERSION, {
+			cwd:config.bower.path
+		}));
+});
+
+gulp.task('bower-tag', ['bower-commit'], function(done) {
+	git.tag(VERSION, 'v' + VERSION, {
+		cwd: config.bower.path
+	}, function (err) {
+		if (err) {
+			throw err;
+		}
+
+		done();
+	});
+});
+
+gulp.task('bower-push', ['bower-tag'], function(done) {
+	git.push('origin', 'master', {
+		args:' --follow-tags',
+		cwd: config.bower.path
+	}, function (err) {
+		if (err) {
+			throw err;
+		}
+
+		done();
+	});
+});
+
+gulp.task('bower-release', ['bower-push']);
