@@ -187,4 +187,12 @@ describe('angular-bootstrap-form-validation', function() {
 			expect(validations.text()).toBe('Maximum length:  4');
 		});
 	});
+
+	describe('uiCustomErrorMessage', function() {
+		it('should throw an error if used (not implemented yet', function() {
+			expect(function() {
+				setup('<ui-custom-error-message></ui-custom-error-message>');
+			}).toThrow();
+		});
+	});
 });
