@@ -13,6 +13,7 @@ var insert = require('gulp-insert');
 var argv = require('minimist')(process.argv.slice(2));
 var bump = require('gulp-bump');
 var git = require('gulp-git');
+var mergeStream = require('merge-stream');
 
 var VERSION = argv.version || pkg.version;
 
@@ -123,7 +124,9 @@ gulp.task('version-bump', function() {
 gulp.task('release', ['version-bump', 'changelog']);
 
 gulp.task('bower-clone', ['build'], function(done) {
-	git.clone(config.bower.repository, function (err) {
+	git.clone(config.bower.repository, {
+		args: '--depth=2'
+	}, function (err) {
 		if (err) {
 			throw err;
 		}
@@ -132,14 +135,12 @@ gulp.task('bower-clone', ['build'], function(done) {
 	});
 });
 
-gulp.task('bower-bump', ['bower-clone'], function() {
-	return bumpVersion(config.bower.path)
-		.pipe(git.add({cwd:config.bower.path}));
-});
-
-gulp.task('bower-commit', ['bower-bump'], function() {
-	return gulp.src('./dist/**/*.*')
-		.pipe(gulp.dest(config.bower.path))
+gulp.task('bower-commit', ['bower-clone'], function() {
+	return mergeStream(
+			bumpVersion(config.bower.path),
+			gulp.src('./dist/**/*.*')
+				.pipe(gulp.dest(config.bower.path))
+		)
 		.pipe(git.add({cwd:config.bower.path}))
 		.pipe(git.commit('release: version ' + VERSION, {
 			cwd:config.bower.path
