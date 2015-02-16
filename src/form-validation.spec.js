@@ -95,8 +95,43 @@ describe('angular-bootstrap-form-validation', function() {
 	});
 
 	describe('uiValidationSubmit', function() {
-		it('should prevent form submit in the presence of validation errors');
-		it('should allow form submit when no validation errors have been found');
+		it('should prevent form submit in the presence of validation errors', function() {
+			var form = setup('<form ui-validation-submit="action()"><input name="model" ng-model="model" ng-minlength="3"><span ui-validation-error-messages></span><button type="submit">Submit</button></form>', {
+				model: 'ab',
+				action: function() {
+					this.model = 'success';
+				}
+			});
+
+			var model = form.find('input').controller('ngModel');
+			expect(model.$modelValue).toBe('ab');
+
+			var formCtrl = form.controller('uiValidationSubmit');
+			expect(formCtrl.attempted).toBe(false);
+
+			form.triggerHandler('submit');
+			expect(formCtrl.attempted).toBe(true);
+			expect(model.$modelValue).toBe('ab');
+		});
+
+		it('should allow form submit when no validation errors have been found', function() {
+			var form = setup('<form ui-validation-submit="action()"><input name="model" ng-model="model" ng-minlength="3"><span ui-validation-error-messages></span><button type="submit">Submit</button></form>', {
+				model: 'abc',
+				action: function() {
+					this.model = 'success';
+				}
+			});
+
+			var model = form.find('input').controller('ngModel');
+			expect(model.$modelValue).toBe('abc');
+
+			var formCtrl = form.controller('uiValidationSubmit');
+			expect(formCtrl.attempted).toBe(false);
+
+			form.triggerHandler('submit');
+			expect(formCtrl.attempted).toBe(true);
+			expect(model.$modelValue).toBe('success');
+		});
 	});
 
 	describe('uiValidationShowErrors', function() {
