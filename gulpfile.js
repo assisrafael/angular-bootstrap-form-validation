@@ -10,8 +10,10 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var filter = require('gulp-filter');
 var insert = require('gulp-insert');
+var argv = require('minimist')(process.argv.slice(2));
+var bump = require('gulp-bump');
 
-var VERSION = pkg.version;
+var VERSION = argv.version || pkg.version;
 
 var config = {
 	banner:
@@ -95,3 +97,14 @@ function filterNonCodeFiles() {
 		return !/\.json|\.spec.js/.test(file.path);
 	});
 }
+
+gulp.task('version-bump', function() {
+	gulp.src([
+		'./bower.json',
+		'./package.json'
+	])
+	.pipe(bump({
+		version: VERSION
+	}))
+	.pipe(gulp.dest('./'));
+});
