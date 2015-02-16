@@ -25,7 +25,9 @@
   "devDependencies": {
     "conventional-changelog": "0.0.11",
     "gulp": "^3.8.11",
+    "gulp-jshint": "^1.9.2",
     "jasmine-core": "^2.2.0",
+    "jshint-summary": "^0.4.0",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
     "karma-coverage": "^0.2.7",

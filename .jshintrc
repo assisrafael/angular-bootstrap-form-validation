@@ -1,0 +1,18 @@
+{
+	"browser": true,
+	"node": true,
+	"jasmine": true,
+	"freeze": true,
+	"nonbsp": true,
+	"quotmark": "single",
+	"singleGroups": true,
+	"undef": true,
+	"unused": "true",
+	"globals": {
+		"angular": true,
+		"inject": true
+	},
+	"predef": [
+		"-console"
+	]
+}
