@@ -5,11 +5,28 @@ var jshint = require('gulp-jshint');
 var karma = require('karma').server;
 var path = require('path');
 var pkg = require('./package.json');
+var ngAnnotate = require('gulp-ng-annotate');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+var filter = require('gulp-filter');
+var insert = require('gulp-insert');
+
+var VERSION = pkg.version;
+
+var config = {
+	banner:
+		'/*!\n' +
+		' * ' + pkg.name + '\n' +
+		' * ' + pkg.homepage + '\n' +
+		' * @license MIT\n' +
+		' * v' + VERSION + '\n' +
+		' */\n',
+};
 
 gulp.task('changelog', function() {
 	var options = {
 		reporitory: pkg.homepage,
-		version: pkg.version,
+		version: VERSION,
 		file: 'CHANGELOG.md'
 	};
 
@@ -24,7 +41,7 @@ gulp.task('changelog', function() {
 });
 
 gulp.task('jshint', function() {
-	gulp.src([
+	return gulp.src([
 		'src/**/*.js',
 		'config/karma.conf.js',
 		'gulpfile.js'
@@ -57,3 +74,24 @@ gulp.task('test-watch', function(done) {
 
 	karma.start(karmaConfig, done);
 });
+
+gulp.task('build', ['jshint'], function() {
+	gulp.src('src/**/*.js')
+	.pipe(filterNonCodeFiles())
+	.pipe(ngAnnotate())
+	.pipe(insert.prepend(config.banner))
+	.pipe(gulp.dest('dist'))
+	.pipe(uglify({
+		preserveComments: 'some'
+	}))
+	.pipe(rename({
+		extname: '.min.js'
+	}))
+	.pipe(gulp.dest('dist'));
+});
+
+function filterNonCodeFiles() {
+	return filter(function(file) {
+		return !/\.json|\.spec.js/.test(file.path);
+	});
+}
